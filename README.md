@@ -81,3 +81,15 @@ This will build the application first and then deploy it to GitHub Pages in the 
 ## License
 
 [The MIT License (MIT)](https://georapbox.mit-license.org/@2022)
+
+## Changelog
+
+``` bash
+npm run deploy
+# ProcessError: fatal: A branch named 'gh-pages' already exists.
+rm -rf node_modules/.cache/gh-pages
+
+npm run deploy
+# https://cubeiq.github.io/cubeiq-barcode-scanner/
+
+npm start -- --open

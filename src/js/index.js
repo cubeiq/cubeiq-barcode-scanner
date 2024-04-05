@@ -31,6 +31,7 @@ import './custom-clipboard-copy.js';
   const settingsDialog = document.getElementById('settingsDialog');
   const settingsForm = document.forms['settings-form'];
   const supportedFormatsEl = document.getElementById('supportedFormats');
+  const apiBtn = document.getElementById('apiBtn');
   let shouldRepeatScan = true;
   let rafId;
 
@@ -339,9 +340,15 @@ import './custom-clipboard-copy.js';
 
     resultDialog.insertBefore(resultItem, resultDialog.querySelector('.results__actions'));
 
+    const apiBtnEl = resultDialog.querySelector('#apiBtn');
     const clipboarCopyEl = resultDialog.querySelector('custom-clipboard-copy');
     const webShareEl = resultDialog.querySelector('web-share');
     const isValidValue = value !== NO_BARCODE_DETECTED;
+
+    if (apiBtnEl) {
+      apiBtnEl.disabled = !isValidValue;
+      apiBtnEl.hidden = !isValidValue;
+    }
 
     if (clipboarCopyEl) {
       clipboarCopyEl.disabled = !isValidValue;
@@ -547,4 +554,35 @@ import './custom-clipboard-copy.js';
       emptyHistory();
     }
   });
+
+  apiBtn.addEventListener('click', () => {
+    if (window.confirm('Are you sure you want to set it to API?')) {
+      // emptyHistory();
+      const barcodeData = document.querySelector('.results__item').textContent; // Assuming 'barcodeResult' is the ID of the element displaying the barcode data
+      sendBarcodeToApi(barcodeData);
+    }
+  });
+
+  function sendBarcodeToApi(barcodeData) {
+    const apiUrl = 'https://api.cubeiq.tech/api/neinstall/check'; // Replace this with your actual API endpoint URL
+    fetch(apiUrl, {
+      method: 'GET', // or 'GET', depending on your API requirements
+      headers: {
+        'Content-Type': 'application/json',
+        'Api-Key': 'TEST_API_KEY'
+      }//,
+      // body: JSON.stringify({
+      //   barcode: barcodeData,
+      // }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+        // Handle success (e.g., display a message or redirect)
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        // Handle error (e.g., display an error message)
+      });
+  }
 }());
