@@ -31,7 +31,8 @@ import './custom-clipboard-copy.js';
   const settingsDialog = document.getElementById('settingsDialog');
   const settingsForm = document.forms['settings-form'];
   const supportedFormatsEl = document.getElementById('supportedFormats');
-  const apiBtn = document.getElementById('apiBtn');
+  const apiBtn1 = document.getElementById('apiBtn1');
+  const apiBtn2 = document.getElementById('apiBtn2');
   let shouldRepeatScan = true;
   let rafId;
 
@@ -340,14 +341,20 @@ import './custom-clipboard-copy.js';
 
     resultDialog.insertBefore(resultItem, resultDialog.querySelector('.results__actions'));
 
-    const apiBtnEl = resultDialog.querySelector('#apiBtn');
+    const apiBtnEl1 = resultDialog.querySelector('#apiBtn1');
+    const apiBtnEl2 = resultDialog.querySelector('#apiBtn2');
     const clipboarCopyEl = resultDialog.querySelector('custom-clipboard-copy');
     const webShareEl = resultDialog.querySelector('web-share');
     const isValidValue = value !== NO_BARCODE_DETECTED;
 
-    if (apiBtnEl) {
-      apiBtnEl.disabled = !isValidValue;
-      apiBtnEl.hidden = !isValidValue;
+    if (apiBtnEl1) {
+      apiBtnEl1.disabled = !isValidValue;
+      apiBtnEl1.hidden = !isValidValue;
+    }
+
+    if (apiBtnEl2) {
+      apiBtnEl2.disabled = !isValidValue;
+      apiBtnEl2.hidden = !isValidValue;
     }
 
     if (clipboarCopyEl) {
@@ -555,7 +562,17 @@ import './custom-clipboard-copy.js';
     }
   });
 
-  apiBtn.addEventListener('click', () => {
+  apiBtn1.addEventListener('click', () => {
+    console.log("CLICKED")
+    if (window.confirm('Are you sure you want to set it to API?')) {
+      // emptyHistory();
+      const barcodeData = document.querySelector('.results__item').textContent; // Assuming 'barcodeResult' is the ID of the element displaying the barcode data
+      sendBarcodeToApi(barcodeData);
+    }
+  });
+
+  apiBtn2.addEventListener('click', () => {
+    console.log("CLICKED")
     if (window.confirm('Are you sure you want to set it to API?')) {
       // emptyHistory();
       const barcodeData = document.querySelector('.results__item').textContent; // Assuming 'barcodeResult' is the ID of the element displaying the barcode data
@@ -564,16 +581,16 @@ import './custom-clipboard-copy.js';
   });
 
   function sendBarcodeToApi(barcodeData) {
-    const apiUrl = 'https://api.cubeiq.tech/api/neinstall/check'; // Replace this with your actual API endpoint URL
+    const apiUrl = 'https://api.cubeiq.tech/api/odoo/broadcast-mac'; // Replace this with your actual API endpoint URL
     fetch(apiUrl, {
-      method: 'GET', // or 'GET', depending on your API requirements
+      method: 'POST', // or 'GET', depending on your API requirements
       headers: {
         'Content-Type': 'application/json',
         'Api-Key': 'TEST_API_KEY'
-      }//,
-      // body: JSON.stringify({
-      //   barcode: barcodeData,
-      // }),
+      },
+      body: JSON.stringify({
+        'mac': barcodeData
+      })
     })
       .then(response => response.json())
       .then(data => {
